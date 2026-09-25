@@ -101,89 +101,6 @@
             font-size: 0.85rem;
         }
 
-        /* إصلاح تداخل القائمة مع اسم المحل على شاشات الموبايل */
-        @media (max-width: 768px) {
-            header {
-                position: fixed;
-                height: auto;
-            }
-
-            .nav-container {
-                width: 100%;
-                max-width: none;
-                padding: 10px 12px 8px;
-                display: block;
-            }
-
-            .logo {
-                display: block;
-                width: 100%;
-                text-align: center;
-                font-size: 1.35rem;
-                line-height: 1.4;
-                margin-bottom: 8px;
-            }
-
-            .nav-links {
-                width: 100%;
-                display: flex;
-                flex-wrap: nowrap;
-                justify-content: flex-start;
-                align-items: center;
-                gap: 14px;
-                overflow-x: auto;
-                overflow-y: hidden;
-                white-space: nowrap;
-                padding: 4px 2px 8px;
-                scrollbar-width: thin;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .nav-links li {
-                flex: 0 0 auto;
-            }
-
-            .nav-links a {
-                font-size: 0.82rem;
-                display: inline-block;
-                padding: 4px 0;
-            }
-
-            .nav-search-container {
-                display: inline-block;
-            }
-
-            .nav-search-input {
-                width: 130px;
-            }
-
-            .nav-search-input:focus {
-                width: 160px;
-            }
-
-            .hero {
-                padding-top: 155px;
-            }
-        }
-
-        @media (max-width: 420px) {
-            .logo {
-                font-size: 1.2rem;
-            }
-
-            .nav-links {
-                gap: 12px;
-            }
-
-            .nav-links a {
-                font-size: 0.78rem;
-            }
-
-            .hero {
-                padding-top: 150px;
-            }
-        }
-
         /* شريط البحث العلوي بجوار خدماتنا */
         .nav-search-container {
             position: relative;
@@ -562,6 +479,89 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 0.85rem;
         }
+
+        /* تحسين الهيدر على الموبايل */
+        @media (max-width: 700px) {
+            header {
+                position: fixed;
+                z-index: 1000;
+            }
+
+            .nav-container {
+                display: block;
+                padding: 10px 12px 8px;
+            }
+
+            .logo {
+                display: block;
+                text-align: center;
+                font-size: 1.35rem;
+                margin-bottom: 9px;
+                line-height: 1.2;
+            }
+
+            .nav-links {
+                display: flex;
+                flex-wrap: nowrap;
+                gap: 8px;
+                align-items: center;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding: 3px 2px 7px;
+                scrollbar-width: none;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .nav-links::-webkit-scrollbar {
+                display: none;
+            }
+
+            .nav-links li {
+                flex: 0 0 auto;
+            }
+
+            .nav-links a {
+                display: block;
+                white-space: nowrap;
+                font-size: 0.78rem;
+                padding: 7px 10px;
+                border-radius: 18px;
+                background: rgba(255,255,255,0.055);
+                border: 1px solid rgba(255,255,255,0.06);
+            }
+
+            .nav-links li:first-child a {
+                color: var(--primary);
+                border-color: rgba(0,255,136,0.2);
+            }
+
+            .nav-search-container {
+                display: block;
+            }
+
+            .nav-search-input {
+                width: 145px;
+                height: 34px;
+                padding: 5px 12px 5px 32px;
+            }
+
+            .nav-search-input:focus {
+                width: 175px;
+            }
+
+            .nav-search-icon {
+                left: 11px;
+            }
+
+            .admin-btn {
+                padding: 7px 10px !important;
+            }
+
+            .hero {
+                padding-top: 145px;
+            }
+        }
+
     </style>
 </head>
 <body>
