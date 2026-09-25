@@ -101,6 +101,89 @@
             font-size: 0.85rem;
         }
 
+        /* إصلاح تداخل القائمة مع اسم المحل على شاشات الموبايل */
+        @media (max-width: 768px) {
+            header {
+                position: fixed;
+                height: auto;
+            }
+
+            .nav-container {
+                width: 100%;
+                max-width: none;
+                padding: 10px 12px 8px;
+                display: block;
+            }
+
+            .logo {
+                display: block;
+                width: 100%;
+                text-align: center;
+                font-size: 1.35rem;
+                line-height: 1.4;
+                margin-bottom: 8px;
+            }
+
+            .nav-links {
+                width: 100%;
+                display: flex;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 14px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                white-space: nowrap;
+                padding: 4px 2px 8px;
+                scrollbar-width: thin;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .nav-links li {
+                flex: 0 0 auto;
+            }
+
+            .nav-links a {
+                font-size: 0.82rem;
+                display: inline-block;
+                padding: 4px 0;
+            }
+
+            .nav-search-container {
+                display: inline-block;
+            }
+
+            .nav-search-input {
+                width: 130px;
+            }
+
+            .nav-search-input:focus {
+                width: 160px;
+            }
+
+            .hero {
+                padding-top: 155px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .nav-links a {
+                font-size: 0.78rem;
+            }
+
+            .hero {
+                padding-top: 150px;
+            }
+        }
+
         /* شريط البحث العلوي بجوار خدماتنا */
         .nav-search-container {
             position: relative;
