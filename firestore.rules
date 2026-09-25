@@ -1,0 +1,24 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Products are public to read, but only signed-in administrators can write.
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Keep the existing public review feature working.
+    // Visitors can read and submit reviews, but cannot edit/delete them.
+    match /reviews/{reviewId} {
+      allow read, create: if true;
+      allow update, delete: if false;
+    }
+
+    // Deny everything else by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

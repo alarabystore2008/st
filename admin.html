@@ -42,17 +42,21 @@
         <div id="loginScreen" class="login-screen active">
             <h2>تسجيل دخول الإدارة</h2>
             <div class="form-group">
-                <label>كلمة السر:</label>
-                <input type="password" id="adminPassword" placeholder="أدخل كلمة السر">
+                <label>البريد الإلكتروني:</label>
+                <input type="email" id="adminEmail" placeholder="admin@example.com" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+                <label>كلمة المرور:</label>
+                <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" autocomplete="current-password" required>
             </div>
             <button class="btn" onclick="checkLogin()">دخول</button>
-            <p id="loginError" style="color: var(--accent); text-align: center; margin-top: 10px; display: none;">كلمة السر غير صحيحة!</p>
+            <p id="loginError" style="color: var(--accent); text-align: center; margin-top: 10px; display: none;"></p>
             <a href="index.html" class="back-link">العودة إلى الموقع الرئيسي</a>
         </div>
 
         <!-- Admin Dashboard -->
         <div id="adminPanel" class="admin-panel">
-            <h2>لوحة التحكم - إضافة منتج</h2>
+            <h2>لوحة التحكم - إضافة منتج</h2><p style="text-align:center;color:var(--text-gray);margin-top:-15px;margin-bottom:20px;">تم تأمين الدخول باستخدام Firebase Authentication</p>
             <form id="productForm" onsubmit="addProduct(event)">
                 <div class="form-group">
                     <label>اسم المنتج:</label>
@@ -108,19 +112,53 @@
             doc,
             serverTimestamp
         } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
         import { firebaseConfig } from "./firebase-config.js";
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const CORRECT_PASSWORD = "123";
+        const auth = getAuth(app);
 
-        window.checkLogin = function() {
-            const pass = document.getElementById('adminPassword').value;
-            if (pass === CORRECT_PASSWORD) {
-                localStorage.setItem('alarabi_logged_in', 'true');
-                showPanel();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
+        function setLoginError(message) {
+            const el = document.getElementById('loginError');
+            el.textContent = message || '';
+            el.style.display = message ? 'block' : 'none';
+        }
+
+        window.checkLogin = async function() {
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const button = document.querySelector('#loginScreen .btn');
+
+            if (!email || !password) {
+                setLoginError('اكتب البريد الإلكتروني وكلمة المرور.');
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = 'جاري تسجيل الدخول...';
+            setLoginError('');
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // onAuthStateChanged will show the panel.
+            } catch (error) {
+                console.error(error);
+                let message = 'تعذر تسجيل الدخول. تأكد من البريد الإلكتروني وكلمة المرور.';
+                if (error.code === 'auth/too-many-requests') {
+                    message = 'تمت محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.';
+                } else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                    message = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+                }
+                setLoginError(message);
+            } finally {
+                button.disabled = false;
+                button.textContent = 'دخول';
             }
         };
 
@@ -130,12 +168,26 @@
             renderAdminProducts();
         }
 
-        window.logout = function() {
-            localStorage.removeItem('alarabi_logged_in');
+        function showLogin() {
             document.getElementById('adminPanel').classList.remove('active');
             document.getElementById('loginScreen').classList.add('active');
-            document.getElementById('adminPassword').value = '';
+        }
+
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error(error);
+            }
         };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                showPanel();
+            } else {
+                showLogin();
+            }
+        });
 
         async function getProducts() {
             const snapshot = await getDocs(collection(db, 'products'));
@@ -277,9 +329,7 @@
             }
         };
 
-        window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('alarabi_logged_in') === 'true') showPanel();
-        });
+        // Firebase Authentication controls access; no localStorage password/session is used.
     </script>
 </body>
 </html>
